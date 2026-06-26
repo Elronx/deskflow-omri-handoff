@@ -1,0 +1,42 @@
+# Deskflow Mac-to-Windows Handoff
+
+Reusable setup notes and prompts for using a Mac keyboard and Mac trackpad/mouse to control a Windows laptop over LAN/Wi-Fi.
+
+This package is intentionally input-only. It does not set up Moonlight, Sunshine, screen streaming, or screen swapping. Those were useful for temporary maintenance, but they caused confusing recursive display states. Start with Deskflow only.
+
+## Goal
+
+- Mac is the Deskflow server.
+- Windows laptop is the Deskflow client.
+- Windows screen is logically to the right of the Mac screen.
+- Mac `Command` behaves like Windows `Ctrl` while controlling Windows.
+- Switch to Windows with `Command+Shift+1` where supported, or Deskflow's closest supported equivalent.
+- Switch back to Mac with `Command+Shift+2` where supported.
+- Keep pointer movement close to the Mac feel with relative mouse moves and cursor locking.
+- Tune Windows client scrolling as far as Deskflow allows.
+
+## Quick Start For Omri
+
+1. Open Codex on the Mac and paste [PROMPT_FOR_MAC_CODEX.md](PROMPT_FOR_MAC_CODEX.md).
+2. Open Codex on the Windows laptop and paste [PROMPT_FOR_WINDOWS_CODEX.md](PROMPT_FOR_WINDOWS_CODEX.md).
+3. Let the Mac Codex and Windows Codex exchange the facts they ask for: Mac IP, Windows IP, Deskflow screen names, firewall status, and connection test output.
+4. Do not enable the optional screen-streaming pieces until Deskflow input is stable.
+
+## Files
+
+- [PROMPT_FOR_MAC_CODEX.md](PROMPT_FOR_MAC_CODEX.md): prompt to paste into Omri's Mac Codex.
+- [PROMPT_FOR_WINDOWS_CODEX.md](PROMPT_FOR_WINDOWS_CODEX.md): prompt to paste into Omri's Windows Codex.
+- [HANDOFF.md](HANDOFF.md): what worked, what failed, and why.
+- [templates/server.conf.template](templates/server.conf.template): Deskflow server config template for the Mac.
+- [mac/deskflow-focus.swift](mac/deskflow-focus.swift): helper that posts Deskflow hotkeys without moving the cursor.
+- [mac/compile-helper.sh](mac/compile-helper.sh): compiles the Swift helper.
+- [mac/switch-to-windows.sh](mac/switch-to-windows.sh): calls the helper to switch control to Windows.
+- [mac/switch-to-mac.sh](mac/switch-to-mac.sh): calls the helper to return control to Mac.
+- [windows/apply-deskflow-client-tuning.ps1](windows/apply-deskflow-client-tuning.ps1): Windows-side Deskflow scroll tuning and optional client restart/autostart.
+
+## Safety Notes
+
+- Do not commit local credentials, Sunshine credentials, logs, or machine-specific configs.
+- Do not touch Bluetooth/custom HID projects for this setup.
+- Ask before installs, firewall changes, Accessibility/Input Monitoring permissions, or autostart changes.
+- Keep all Omri-specific work in `~/Mac-Windows/deskflow-mac-windows-setup` on the Mac and `%USERPROFILE%\Mac-Windows\deskflow-mac-windows-setup` on Windows.

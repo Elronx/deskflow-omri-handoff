@@ -1,0 +1,11 @@
+.DS_Store
+run/
+*.log
+*.pid
+*.before-*
+*.bak
+*.tmp
+sunshine*credentials*
+*credentials*
+*secret*
+local-*.conf
