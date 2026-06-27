@@ -13,7 +13,7 @@ Priority order:
 2. Reliable smooth switching.
 3. Hotkey switching, ideally Command+Shift+1 to Windows and Command+Shift+2 back to Mac, or the closest Deskflow-supported equivalent.
 4. Mac Command should act as Windows Ctrl while controlling Windows.
-5. Clipboard sharing if stable.
+5. Clipboard sharing only after the input-only baseline is stable; start with clipboard disabled.
 
 Work area:
 Use a new separate folder only:
@@ -27,6 +27,7 @@ Important lessons from the working setup:
 - Windows screen should be to the right of the Mac screen.
 - Set switchDelay = 0.
 - Set relativeMouseMoves = true.
+- Start with clipboardSharing = false for lower overhead; re-enable later only if I ask and the input bridge is stable.
 - When switching to Windows, lock cursor to the Windows screen.
 - When switching back to Mac, unlock cursor.
 - On the Windows screen in the Mac server config, map:
@@ -81,7 +82,7 @@ Tasks:
    - Shift+1 types ! and does not switch machines.
    - Command+C/V/A/L act as Ctrl+C/V/A/L on Windows.
    - Mouse does not jump to the right when switching.
-   - Clipboard sharing works or is disabled if unstable.
+   - Clipboard sharing is disabled for the first stable input-only pass.
 12. Ask Windows Codex to run the Windows tuning script after input is working:
     windows/apply-deskflow-client-tuning.ps1 with ScrollScale 0.1, WheelScrollLines 1, WheelScrollChars 1.
 13. Keep exact notes of settings, commands, permissions, test results, and any caveats.

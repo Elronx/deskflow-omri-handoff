@@ -14,6 +14,7 @@ This package is intentionally input-only. It does not set up Moonlight, Sunshine
 - Switch back to Mac with `Command+Shift+2` where supported.
 - Keep pointer movement close to the Mac feel with relative mouse moves and cursor locking.
 - Tune Windows client scrolling as far as Deskflow allows.
+- Start with clipboard sharing disabled; re-enable later only after the input bridge is stable.
 
 ## Quick Start For Omri
 

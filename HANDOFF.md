@@ -10,7 +10,7 @@ Use Deskflow for input only:
 - Windows runs Deskflow as client.
 - Deskflow TCP port: `24800`.
 - Windows screen sits to the right of the Mac screen in Deskflow layout.
-- Clipboard sharing can stay enabled with a small limit if stable.
+- Clipboard sharing starts disabled for the base input-only setup; re-enable later only if needed and stable.
 - Screen streaming, Moonlight, Sunshine, and screen swap are optional future work and are not part of the base handoff.
 
 ## What Worked
@@ -19,7 +19,7 @@ Mac server settings:
 
 - `switchDelay = 0`
 - `relativeMouseMoves = true`
-- `clipboardSharing = true`
+- `clipboardSharing = false`
 - `clipboardSharingSize = 1024`
 - If VPN is used, bind Deskflow to the current local LAN IP dynamically rather than to VPN tunnel interfaces.
 - Set Deskflow `preventSleep=false` for lower battery/heat unless the Mac must be forced awake.
@@ -63,6 +63,8 @@ On the working Mac, `shift+meta+1` behaved like plain `Shift+1`. That broke typi
 Do not use an edge-push cursor fallback in helper scripts. The early helper moved the mouse to the right edge to force switching; it caused the pointer to jump. The final helper only posts Deskflow hotkeys.
 
 Do not mix in screen streaming at first. Moonlight/Sunshine was used only as a temporary maintenance view when Windows Codex handoff was unavailable. It is not needed for daily Deskflow input control.
+
+Start with clipboard sharing disabled. It is convenient, but for the lowest-overhead reliable baseline it is another sync path that is not required for keyboard/mouse control.
 
 Do not expose Deskflow over VPN tunnel interfaces if VPN is used. In the working setup, the best final state was a dynamic LAN bind: a wrapper waits for the Wi-Fi/LAN IP, writes it as `interface=<LAN_IP>` directly under `coreMode=2` in `~/Library/Deskflow/Deskflow.conf`, then starts `deskflow-core`.
 
@@ -125,6 +127,7 @@ Mac-side:
 - `server.conf` uses the real `<MAC_SCREEN_NAME>` and `<WINDOWS_SCREEN_NAME>`.
 - Deskflow server is listening on TCP `24800`.
 - Deskflow log shows Windows client connected.
+- Clipboard sharing is disabled for the first stable input-only pass.
 - `Command+Shift+1` or fallback hotkey switches to Windows.
 - `Command+Shift+2` or fallback hotkey switches back to Mac.
 - Typing `Shift+1` produces `!` and does not switch machines.

@@ -30,7 +30,7 @@ end
 section: options
   switchDelay = 0
   relativeMouseMoves = true
-  clipboardSharing = true
+  clipboardSharing = false
   clipboardSharingSize = 1024
 
   # Preferred direct switches.
