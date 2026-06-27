@@ -21,6 +21,7 @@ Mac server settings:
 - `relativeMouseMoves = true`
 - `clipboardSharing = true`
 - `clipboardSharingSize = 1024`
+- Do not pin the Deskflow server to one specific LAN interface/IP in the GUI settings unless the IP is reserved and stable.
 - Windows screen to the right of Mac screen.
 - Cursor lock when switching to Windows.
 - Cursor unlock when switching back to Mac.
@@ -61,6 +62,25 @@ On the working Mac, `shift+meta+1` behaved like plain `Shift+1`. That broke typi
 Do not use an edge-push cursor fallback in helper scripts. The early helper moved the mouse to the right edge to force switching; it caused the pointer to jump. The final helper only posts Deskflow hotkeys.
 
 Do not mix in screen streaming at first. Moonlight/Sunshine was used only as a temporary maintenance view when Windows Codex handoff was unavailable. It is not needed for daily Deskflow input control.
+
+Do not leave the Mac server bound to a single transient Wi-Fi IP. In the working setup, overnight sleep/wake produced `cannot bind address` failures and a connected-but-flickering input state. Removing the fixed `interface=<LAN_IP>` line and letting Deskflow listen on `*:24800` was more reliable.
+
+## Mac Reliability Watchdog
+
+For daily use, run Deskflow server through a user LaunchAgent and add a small watchdog:
+
+- Restart Deskflow if TCP `24800` is not listening.
+- Detect macOS wake events and restart Deskflow once after wake.
+- Keep the external `server.conf` as the source of layout/hotkeys.
+- Set Deskflow GUI `startCoreWithGui=false` so the LaunchAgent is the single owner of the core process.
+
+The repo includes templates:
+
+- `mac/deskflow-reliable-restart.sh`
+- `mac/deskflow-watchdog.sh`
+- `mac/com.local.deskflow-watchdog.plist.template`
+
+When adapting the plist, replace `<MAC_SETUP_ROOT>` with Omri's absolute setup folder, usually `/Users/<omri-user>/Mac-Windows/deskflow-mac-windows-setup`.
 
 ## Windows Client Tuning
 

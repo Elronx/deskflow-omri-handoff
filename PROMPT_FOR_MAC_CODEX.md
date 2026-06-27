@@ -37,6 +37,8 @@ Important lessons from the working setup:
 - Do not use keystroke(shift+meta+1) or keystroke(shift+meta+2). In the working Mac setup, that broke typing Shift+1 / ! by triggering a screen switch.
 - Use shift+super+1/2 if Deskflow recognizes Command that way, plus shift+alt+1/2 fallback.
 - The Swift helper must only post Control+Command+Right/Left Deskflow hotkeys. Do not push the cursor to the screen edge as a fallback.
+- Do not bind the Deskflow server to a single fixed Wi-Fi IP unless that IP is reserved. Prefer listening on all interfaces so sleep/wake does not leave Deskflow unable to bind.
+- Add the Mac reliability watchdog after the base setup works: restart Deskflow if port 24800 is not listening and restart once after macOS wake.
 
 Tasks:
 1. Create/use ~/Mac-Windows/deskflow-mac-windows-setup only.
@@ -59,21 +61,27 @@ Tasks:
 5. Generate server.conf from templates/server.conf.template with the real Mac and Windows screen names.
 6. Configure Deskflow as server using that config.
 7. Compile mac/deskflow-focus.swift and create switch scripts equivalent to switch-to-windows.sh and switch-to-mac.sh.
-8. Bind hotkeys:
+8. Install a user LaunchAgent for Deskflow server if one is not already present, and make sure it uses the Deskflow settings file that points to the external server.conf.
+9. Install/adapt the watchdog templates:
+   - mac/deskflow-reliable-restart.sh
+   - mac/deskflow-watchdog.sh
+   - mac/com.local.deskflow-watchdog.plist.template
+10. Bind hotkeys:
    - Prefer direct Deskflow hotkeys shift+super+1 and shift+super+2.
    - If BetterTouchTool is already installed or I approve using it, bind Command+Shift+1 to switch-to-windows.sh and Command+Shift+2 to switch-to-mac.sh.
    - Keep Deskflow fallback hotkeys shift+alt+1/2 and control+super+arrow.
-9. Verify:
+11. Verify:
    - Windows connects to Mac server on TCP 24800.
+   - Mac server listens on *:24800 or all interfaces, not only one transient LAN IP.
    - Command+Shift+1 or fallback switches to Windows.
    - Command+Shift+2 or fallback returns to Mac.
    - Shift+1 types ! and does not switch machines.
    - Command+C/V/A/L act as Ctrl+C/V/A/L on Windows.
    - Mouse does not jump to the right when switching.
    - Clipboard sharing works or is disabled if unstable.
-10. Ask Windows Codex to run the Windows tuning script after input is working:
+12. Ask Windows Codex to run the Windows tuning script after input is working:
     windows/apply-deskflow-client-tuning.ps1 with ScrollScale 0.1, WheelScrollLines 1, WheelScrollChars 1.
-11. Keep exact notes of settings, commands, permissions, test results, and any caveats.
+13. Keep exact notes of settings, commands, permissions, test results, and any caveats.
 
 Do not touch Bluetooth/custom HID repos. Do not enable screen streaming. Start by gathering facts and tell me the next safest action.
 ```
