@@ -18,14 +18,13 @@ Use Deskflow for input only:
 Mac server settings:
 
 - `switchDelay = 0`
-- `relativeMouseMoves = true`
+- `relativeMouseMoves = false`
 - `clipboardSharing = false`
 - `clipboardSharingSize = 1024`
 - If VPN is used, bind Deskflow to the current local LAN IP dynamically rather than to VPN tunnel interfaces.
 - Set Deskflow `preventSleep=false` for lower battery/heat unless the Mac must be forced awake.
 - Windows screen to the right of Mac screen.
-- Cursor lock when switching to Windows.
-- Cursor unlock when switching back to Mac.
+- Do not lock cursor when switching; locked relative mode caused center warps on the working setup.
 
 Windows screen modifier mapping in the Mac Deskflow server config:
 
@@ -47,10 +46,10 @@ Important exception: macOS reserves physical `Command+Tab` for the Mac app switc
 Working hotkey pattern:
 
 ```text
-keystroke(shift+super+1) = lockCursorToScreen(off), switchToScreen(<MAC_SCREEN_NAME>)
-keystroke(shift+super+2) = switchToScreen(<WINDOWS_SCREEN_NAME>), lockCursorToScreen(on)
-keystroke(control+super+right) = switchInDirection(right), lockCursorToScreen(on)
-keystroke(control+super+left) = lockCursorToScreen(off), switchInDirection(left)
+keystroke(shift+super+1) = switchToScreen(<MAC_SCREEN_NAME>)
+keystroke(shift+super+2) = switchToScreen(<WINDOWS_SCREEN_NAME>)
+keystroke(control+super+right) = switchInDirection(right)
+keystroke(control+super+left) = switchInDirection(left)
 ```
 
 Also include `shift+alt+1/2` and `control+alt+right/left` fallbacks, because Deskflow/macOS modifier naming can vary.
@@ -69,6 +68,8 @@ On the working Mac, `shift+meta+1` behaved like plain `Shift+1`. That broke typi
 Do not use an edge-push cursor fallback in helper scripts. The early helper moved the mouse to the right edge to force switching; it caused the pointer to jump. The final helper only posts Deskflow hotkeys.
 
 Do not assume Deskflow mapping alone can override macOS `Command+Tab`. If `Command+Tab` matters, use the BTT enable/disable bridge described above.
+
+Do not use locked relative mouse mode as the default. The working setup initially used `relativeMouseMoves=true` plus `lockCursorToScreen(on)`, but that caused pointer warps/center jumps, especially around Windows focus changes and UAC prompts. The stable default is `relativeMouseMoves=false` and no `lockCursorToScreen(...)` hotkey actions.
 
 Do not mix in screen streaming at first. Moonlight/Sunshine was used only as a temporary maintenance view when Windows Codex handoff was unavailable. It is not needed for daily Deskflow input control.
 
@@ -148,6 +149,12 @@ Windows-side:
 - Notepad receives typed text.
 - If the BTT bridge is installed, `Command+Tab` from Mac behaves like Windows `Alt+Tab` after Windows mode is entered with `Command+Shift+2`.
 - Two-finger scroll is tested in a browser and adjusted only through the Windows tuning script or Deskflow client settings.
+
+UAC note:
+
+- Windows UAC prompts may appear on secure desktop, where normal user-level Deskflow input cannot click `Yes`.
+- Prefer a Deskflow service/daemon/elevated-client setup if the installed Deskflow build supports it.
+- Do not disable UAC secure desktop unless the user explicitly accepts the security tradeoff.
 
 ## Coordination Script
 

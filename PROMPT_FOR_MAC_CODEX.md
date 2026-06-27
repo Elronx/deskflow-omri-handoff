@@ -26,10 +26,9 @@ Important lessons from the working setup:
 - Use Deskflow input only at first.
 - Windows screen should be to the right of the Mac screen.
 - Set switchDelay = 0.
-- Set relativeMouseMoves = true.
+- Set relativeMouseMoves = false.
 - Start with clipboardSharing = false for lower overhead; re-enable later only if I ask and the input bridge is stable.
-- When switching to Windows, lock cursor to the Windows screen.
-- When switching back to Mac, unlock cursor.
+- Do not use lockCursorToScreen by default. Locked relative mode caused pointer center-jumps in the working setup.
 - On the Windows screen in the Mac server config, map:
   super = alt
   meta = alt
@@ -82,7 +81,7 @@ Tasks:
    - Command+Shift+2 or fallback switches to Windows.
    - Shift+1 types ! and does not switch machines.
    - If the BTT bridge was installed, Command+Tab acts as Alt+Tab on Windows after entering Windows mode with Command+Shift+2.
-   - Mouse does not jump to the right when switching.
+   - Mouse does not jump to the right or center when switching.
    - Clipboard sharing is disabled for the first stable input-only pass.
 12. Ask Windows Codex to run the Windows tuning script after input is working:
     windows/apply-deskflow-client-tuning.ps1 with ScrollScale 0.1, WheelScrollLines 1, WheelScrollChars 1.

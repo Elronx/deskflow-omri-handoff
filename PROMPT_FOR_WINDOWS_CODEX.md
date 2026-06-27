@@ -26,6 +26,7 @@ Important lessons from the working setup:
 - The Mac is the Deskflow server; Windows is the Deskflow client.
 - Windows does not need inbound Deskflow server access for the normal client setup, but it must reach the Mac server at <MAC_LAN_IP>:24800.
 - Ask before installing software, changing firewall rules, adding autostart, or making admin-level changes.
+- UAC prompts may use Windows secure desktop, where normal user-level Deskflow input cannot click Yes. Prefer a Deskflow service/daemon/elevated-client setup if available. Do not disable secure desktop unless I explicitly approve the security tradeoff.
 - Deskflow client scroll scale should be set to 0.1. That is the lowest built-in value we found useful.
 - Windows wheel settings should be WheelScrollLines=1 and WheelScrollChars=1.
 - If the Deskflow GUI cannot restart the client, find deskflow-core.exe and run it as:

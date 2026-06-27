@@ -12,7 +12,7 @@ This package is intentionally input-only. It does not set up Moonlight, Sunshine
 - Mac `Command` behaves like Windows `Alt` while controlling Windows.
 - Switch back to Mac with `Command+Shift+1` where supported, or Deskflow's closest supported equivalent.
 - Switch to Windows with `Command+Shift+2` where supported.
-- Keep pointer movement close to the Mac feel with relative mouse moves and cursor locking.
+- Keep pointer movement stable with absolute Deskflow pointer mode; avoid locked relative mode unless there is a specific reason to re-test it.
 - Tune Windows client scrolling as far as Deskflow allows.
 - Start with clipboard sharing disabled; re-enable later only after the input bridge is stable.
 
