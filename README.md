@@ -9,9 +9,9 @@ This package is intentionally input-only. It does not set up Moonlight, Sunshine
 - Mac is the Deskflow server.
 - Windows laptop is the Deskflow client.
 - Windows screen is logically to the right of the Mac screen.
-- Mac `Command` behaves like Windows `Ctrl` while controlling Windows.
-- Switch to Windows with `Command+Shift+1` where supported, or Deskflow's closest supported equivalent.
-- Switch back to Mac with `Command+Shift+2` where supported.
+- Mac `Command` behaves like Windows `Alt` while controlling Windows.
+- Switch back to Mac with `Command+Shift+1` where supported, or Deskflow's closest supported equivalent.
+- Switch to Windows with `Command+Shift+2` where supported.
 - Keep pointer movement close to the Mac feel with relative mouse moves and cursor locking.
 - Tune Windows client scrolling as far as Deskflow allows.
 - Start with clipboard sharing disabled; re-enable later only after the input bridge is stable.

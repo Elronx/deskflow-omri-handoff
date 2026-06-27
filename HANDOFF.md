@@ -30,19 +30,19 @@ Mac server settings:
 Windows screen modifier mapping in the Mac Deskflow server config:
 
 ```text
-super = ctrl
-meta = ctrl
+super = alt
+meta = alt
 alt = alt
 ctrl = ctrl
 ```
 
-This makes the Mac `Command` key behave like Windows `Ctrl` while the Windows client is focused. Without it, `Command` can act like the Windows key and open Start.
+This makes the Mac `Command` key behave like Windows `Alt` while the Windows client is focused. Deskflow's text config exposes generic `alt`, not a left/right Alt split. With Windows focus, `Command+Tab` should behave like Windows `Alt+Tab`.
 
 Working hotkey pattern:
 
 ```text
-keystroke(shift+super+1) = switchToScreen(<WINDOWS_SCREEN_NAME>), lockCursorToScreen(on)
-keystroke(shift+super+2) = lockCursorToScreen(off), switchToScreen(<MAC_SCREEN_NAME>)
+keystroke(shift+super+1) = lockCursorToScreen(off), switchToScreen(<MAC_SCREEN_NAME>)
+keystroke(shift+super+2) = switchToScreen(<WINDOWS_SCREEN_NAME>), lockCursorToScreen(on)
 keystroke(control+super+right) = switchInDirection(right), lockCursorToScreen(on)
 keystroke(control+super+left) = lockCursorToScreen(off), switchInDirection(left)
 ```
@@ -128,8 +128,8 @@ Mac-side:
 - Deskflow server is listening on TCP `24800`.
 - Deskflow log shows Windows client connected.
 - Clipboard sharing is disabled for the first stable input-only pass.
-- `Command+Shift+1` or fallback hotkey switches to Windows.
-- `Command+Shift+2` or fallback hotkey switches back to Mac.
+- `Command+Shift+1` or fallback hotkey switches back to Mac.
+- `Command+Shift+2` or fallback hotkey switches to Windows.
 - Typing `Shift+1` produces `!` and does not switch machines.
 
 Windows-side:
@@ -137,7 +137,7 @@ Windows-side:
 - Deskflow client shows the Mac server IP.
 - Windows has an established TCP connection to `<MAC_LAN_IP>:24800`.
 - Notepad receives typed text.
-- `Command+C`, `Command+V`, `Command+A`, and `Command+L` from Mac behave like Windows `Ctrl+C`, `Ctrl+V`, `Ctrl+A`, and `Ctrl+L`.
+- `Command+Tab` from Mac behaves like Windows `Alt+Tab` while Windows has Deskflow focus.
 - Two-finger scroll is tested in a browser and adjusted only through the Windows tuning script or Deskflow client settings.
 
 ## Coordination Script

@@ -11,8 +11,8 @@ I want to control my Windows laptop from my Mac using the Mac keyboard and Mac t
 Priority order:
 1. Lowest practical input latency.
 2. Reliable smooth switching.
-3. Hotkey switching, ideally Command+Shift+1 to Windows and Command+Shift+2 back to Mac, or the closest Deskflow-supported equivalent.
-4. Mac Command should act as Windows Ctrl while controlling Windows.
+3. Hotkey switching, ideally Command+Shift+1 back to Mac and Command+Shift+2 to Windows, or the closest Deskflow-supported equivalent.
+4. Mac Command should act as Windows Alt while controlling Windows, so Command+Tab behaves like Windows Alt+Tab.
 5. Clipboard sharing only after the input-only baseline is stable; start with clipboard disabled.
 
 Work area:
@@ -31,8 +31,8 @@ Important lessons from the working setup:
 - When switching to Windows, lock cursor to the Windows screen.
 - When switching back to Mac, unlock cursor.
 - On the Windows screen in the Mac server config, map:
-  super = ctrl
-  meta = ctrl
+  super = alt
+  meta = alt
   alt = alt
   ctrl = ctrl
 - Do not use keystroke(shift+meta+1) or keystroke(shift+meta+2). In the working Mac setup, that broke typing Shift+1 / ! by triggering a screen switch.
@@ -71,16 +71,16 @@ Tasks:
    - mac/com.local.deskflow-watchdog.plist.template
 10. Bind hotkeys:
    - Prefer direct Deskflow hotkeys shift+super+1 and shift+super+2.
-   - If BetterTouchTool is already installed or I approve using it, bind Command+Shift+1 to switch-to-windows.sh and Command+Shift+2 to switch-to-mac.sh.
+   - If BetterTouchTool is already installed or I approve using it, bind Command+Shift+1 to switch-to-mac.sh and Command+Shift+2 to switch-to-windows.sh.
    - Keep Deskflow fallback hotkeys shift+alt+1/2 and control+super+arrow.
 11. Verify:
    - Windows connects to Mac server on TCP 24800.
    - If VPN is used, Mac server listens on the LAN IP only, not VPN interfaces.
    - Route to Windows stays on Wi-Fi/LAN, not utun/VPN.
-   - Command+Shift+1 or fallback switches to Windows.
-   - Command+Shift+2 or fallback returns to Mac.
+   - Command+Shift+1 or fallback returns to Mac.
+   - Command+Shift+2 or fallback switches to Windows.
    - Shift+1 types ! and does not switch machines.
-   - Command+C/V/A/L act as Ctrl+C/V/A/L on Windows.
+   - Command+Tab acts as Alt+Tab on Windows.
    - Mouse does not jump to the right when switching.
    - Clipboard sharing is disabled for the first stable input-only pass.
 12. Ask Windows Codex to run the Windows tuning script after input is working:

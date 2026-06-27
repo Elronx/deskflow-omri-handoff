@@ -11,7 +11,7 @@ I want the Mac keyboard and Mac trackpad/mouse to control this Windows laptop wi
 Priority order:
 1. Lowest practical input latency.
 2. Reliable smooth switching.
-3. Mac Command should behave as Windows Ctrl while controlling Windows. The Mac server config handles most of this.
+3. Mac Command should behave as Windows Alt while controlling Windows. The Mac server config handles this.
 4. Trackpad pointer speed should feel close to the Mac.
 5. Two-finger scroll should be slowed and smoothed as much as Deskflow/Windows allow.
 
@@ -68,7 +68,7 @@ Tasks after approval:
 6. Test Notepad input from the Mac:
    - normal letters.
    - Shift+1 should type !, not switch machines.
-   - Command+C/V/A/L from the Mac should behave like Ctrl+C/V/A/L on Windows.
+   - Command+Tab from the Mac should behave like Alt+Tab on Windows while Windows has Deskflow focus.
 7. Apply scroll tuning by running windows/apply-deskflow-client-tuning.ps1:
    powershell -ExecutionPolicy Bypass -File .\windows\apply-deskflow-client-tuning.ps1 -ScrollScale 0.1 -WheelScrollLines 1 -WheelScrollChars 1 -RestartDeskflow
 8. If Omri approves autostart, rerun with -AddCurrentUserAutostart and the real -MacServerIp.

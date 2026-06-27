@@ -6,9 +6,9 @@
 section: screens
   <MAC_SCREEN_NAME>:
   <WINDOWS_SCREEN_NAME>:
-    # Make Mac Command act like Windows Ctrl while controlling Windows.
-    super = ctrl
-    meta = ctrl
+    # Make Mac Command act like Windows Alt while controlling Windows.
+    super = alt
+    meta = alt
     alt = alt
     ctrl = ctrl
 end
@@ -34,12 +34,12 @@ section: options
   clipboardSharingSize = 1024
 
   # Preferred direct switches.
-  keystroke(shift+super+1) = switchToScreen(<WINDOWS_SCREEN_NAME>), lockCursorToScreen(on)
-  keystroke(shift+super+2) = lockCursorToScreen(off), switchToScreen(<MAC_SCREEN_NAME>)
+  keystroke(shift+super+1) = lockCursorToScreen(off), switchToScreen(<MAC_SCREEN_NAME>)
+  keystroke(shift+super+2) = switchToScreen(<WINDOWS_SCREEN_NAME>), lockCursorToScreen(on)
 
   # Fallbacks if Command maps differently in this Deskflow/macOS build.
-  keystroke(shift+alt+1) = switchToScreen(<WINDOWS_SCREEN_NAME>), lockCursorToScreen(on)
-  keystroke(shift+alt+2) = lockCursorToScreen(off), switchToScreen(<MAC_SCREEN_NAME>)
+  keystroke(shift+alt+1) = lockCursorToScreen(off), switchToScreen(<MAC_SCREEN_NAME>)
+  keystroke(shift+alt+2) = switchToScreen(<WINDOWS_SCREEN_NAME>), lockCursorToScreen(on)
 
   # Helper-friendly directional bindings.
   keystroke(control+super+right) = switchInDirection(right), lockCursorToScreen(on)
