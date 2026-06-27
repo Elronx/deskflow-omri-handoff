@@ -7,6 +7,8 @@ LOG="$RUN/deskflow-reliability.log"
 LOCK="$RUN/deskflow-watchdog.lock"
 WAKE_STATE="$RUN/deskflow-last-wake.txt"
 IP_STATE="$RUN/deskflow-last-ip.txt"
+LAN_IFACE="${DESKFLOW_LAN_IFACE:-en0}"
+WINDOWS_IP="${DESKFLOW_WINDOWS_IP:-192.168.1.106}"
 
 mkdir -p "$RUN"
 if ! mkdir "$LOCK" 2>/dev/null; then
@@ -22,11 +24,7 @@ restart() {
   "$ROOT/deskflow-reliable-restart.sh" "$1" >> "$LOG" 2>&1 || true
 }
 
-default_iface="$(route -n get default 2>/dev/null | awk '/interface:/{print $2; exit}')"
-current_ip=""
-if [[ -n "$default_iface" ]]; then
-  current_ip="$(ipconfig getifaddr "$default_iface" 2>/dev/null || true)"
-fi
+current_ip="$(ipconfig getifaddr "$LAN_IFACE" 2>/dev/null || true)"
 
 if [[ -n "$current_ip" ]]; then
   previous_ip="$(cat "$IP_STATE" 2>/dev/null || true)"
@@ -35,6 +33,11 @@ if [[ -n "$current_ip" ]]; then
     restart "ip-change-$previous_ip-to-$current_ip"
   fi
   printf '%s\n' "$current_ip" > "$IP_STATE"
+fi
+
+windows_route_iface="$(route -n get "$WINDOWS_IP" 2>/dev/null | awk '/interface:/{print $2; exit}')"
+if [[ -n "$windows_route_iface" && "$windows_route_iface" != "$LAN_IFACE" ]]; then
+  log "WARNING: route to Windows $WINDOWS_IP is via $windows_route_iface, expected $LAN_IFACE. VPN may be blocking local LAN."
 fi
 
 if ! lsof -nP -iTCP:24800 -sTCP:LISTEN 2>/dev/null | grep -q 'deskflow'; then

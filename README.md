@@ -32,6 +32,7 @@ This package is intentionally input-only. It does not set up Moonlight, Sunshine
 - [mac/compile-helper.sh](mac/compile-helper.sh): compiles the Swift helper.
 - [mac/switch-to-windows.sh](mac/switch-to-windows.sh): calls the helper to switch control to Windows.
 - [mac/switch-to-mac.sh](mac/switch-to-mac.sh): calls the helper to return control to Mac.
+- [mac/deskflow-server-wrapper.sh](mac/deskflow-server-wrapper.sh): starts Deskflow bound to the local LAN interface, not VPN tunnels.
 - [mac/deskflow-reliable-restart.sh](mac/deskflow-reliable-restart.sh): controlled restart helper for the Mac server LaunchAgent.
 - [mac/deskflow-watchdog.sh](mac/deskflow-watchdog.sh): wake/listener watchdog for the Mac server.
 - [mac/com.local.deskflow-watchdog.plist.template](mac/com.local.deskflow-watchdog.plist.template): LaunchAgent template for the watchdog.
@@ -43,4 +44,4 @@ This package is intentionally input-only. It does not set up Moonlight, Sunshine
 - Do not touch Bluetooth/custom HID projects for this setup.
 - Ask before installs, firewall changes, Accessibility/Input Monitoring permissions, or autostart changes.
 - Keep all Omri-specific work in `~/Mac-Windows/deskflow-mac-windows-setup` on the Mac and `%USERPROFILE%\Mac-Windows\deskflow-mac-windows-setup` on Windows.
-- On the Mac, avoid binding the server to one fixed interface/IP unless there is a specific reason. Binding to all interfaces survived sleep/wake more reliably in the working setup.
+- If VPN is used, bind Deskflow to the local LAN IP dynamically with `mac/deskflow-server-wrapper.sh`, and make sure the VPN allows local LAN access.

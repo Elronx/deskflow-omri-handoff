@@ -37,7 +37,8 @@ Important lessons from the working setup:
 - Do not use keystroke(shift+meta+1) or keystroke(shift+meta+2). In the working Mac setup, that broke typing Shift+1 / ! by triggering a screen switch.
 - Use shift+super+1/2 if Deskflow recognizes Command that way, plus shift+alt+1/2 fallback.
 - The Swift helper must only post Control+Command+Right/Left Deskflow hotkeys. Do not push the cursor to the screen edge as a fallback.
-- Do not bind the Deskflow server to a single fixed Wi-Fi IP unless that IP is reserved. Prefer listening on all interfaces so sleep/wake does not leave Deskflow unable to bind.
+- If VPN is used, do not expose Deskflow on VPN interfaces. Use the LAN wrapper pattern: bind to the current Wi-Fi/LAN IP dynamically and verify route to Windows stays on local LAN.
+- Set Deskflow preventSleep=false unless I explicitly want the Mac kept awake; this reduces battery/heat and the watchdog can recover after wake.
 - Add the Mac reliability watchdog after the base setup works: restart Deskflow if port 24800 is not listening and restart once after macOS wake.
 
 Tasks:
@@ -63,6 +64,7 @@ Tasks:
 7. Compile mac/deskflow-focus.swift and create switch scripts equivalent to switch-to-windows.sh and switch-to-mac.sh.
 8. Install a user LaunchAgent for Deskflow server if one is not already present, and make sure it uses the Deskflow settings file that points to the external server.conf.
 9. Install/adapt the watchdog templates:
+   - mac/deskflow-server-wrapper.sh
    - mac/deskflow-reliable-restart.sh
    - mac/deskflow-watchdog.sh
    - mac/com.local.deskflow-watchdog.plist.template
@@ -72,7 +74,8 @@ Tasks:
    - Keep Deskflow fallback hotkeys shift+alt+1/2 and control+super+arrow.
 11. Verify:
    - Windows connects to Mac server on TCP 24800.
-   - Mac server listens on *:24800 or all interfaces, not only one transient LAN IP.
+   - If VPN is used, Mac server listens on the LAN IP only, not VPN interfaces.
+   - Route to Windows stays on Wi-Fi/LAN, not utun/VPN.
    - Command+Shift+1 or fallback switches to Windows.
    - Command+Shift+2 or fallback returns to Mac.
    - Shift+1 types ! and does not switch machines.

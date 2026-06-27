@@ -21,7 +21,8 @@ Mac server settings:
 - `relativeMouseMoves = true`
 - `clipboardSharing = true`
 - `clipboardSharingSize = 1024`
-- Do not pin the Deskflow server to one specific LAN interface/IP in the GUI settings unless the IP is reserved and stable.
+- If VPN is used, bind Deskflow to the current local LAN IP dynamically rather than to VPN tunnel interfaces.
+- Set Deskflow `preventSleep=false` for lower battery/heat unless the Mac must be forced awake.
 - Windows screen to the right of Mac screen.
 - Cursor lock when switching to Windows.
 - Cursor unlock when switching back to Mac.
@@ -63,7 +64,9 @@ Do not use an edge-push cursor fallback in helper scripts. The early helper move
 
 Do not mix in screen streaming at first. Moonlight/Sunshine was used only as a temporary maintenance view when Windows Codex handoff was unavailable. It is not needed for daily Deskflow input control.
 
-Do not leave the Mac server bound to a single transient Wi-Fi IP. In the working setup, overnight sleep/wake produced `cannot bind address` failures and a connected-but-flickering input state. Removing the fixed `interface=<LAN_IP>` line and letting Deskflow listen on `*:24800` was more reliable.
+Do not expose Deskflow over VPN tunnel interfaces if VPN is used. In the working setup, the best final state was a dynamic LAN bind: a wrapper waits for the Wi-Fi/LAN IP, writes it as `interface=<LAN_IP>` directly under `coreMode=2` in `~/Library/Deskflow/Deskflow.conf`, then starts `deskflow-core`.
+
+The VPN must allow local LAN traffic. If the route to the Windows laptop goes through `utun*` or disappears, enable local-network/LAN access or split tunneling for the LAN subnet on both machines.
 
 ## Mac Reliability Watchdog
 
@@ -78,6 +81,7 @@ The repo includes templates:
 
 - `mac/deskflow-reliable-restart.sh`
 - `mac/deskflow-watchdog.sh`
+- `mac/deskflow-server-wrapper.sh`
 - `mac/com.local.deskflow-watchdog.plist.template`
 
 When adapting the plist, replace `<MAC_SETUP_ROOT>` with Omri's absolute setup folder, usually `/Users/<omri-user>/Mac-Windows/deskflow-mac-windows-setup`.
