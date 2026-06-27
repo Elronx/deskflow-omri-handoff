@@ -12,7 +12,7 @@ Priority order:
 1. Lowest practical input latency.
 2. Reliable smooth switching.
 3. Hotkey switching, ideally Command+Shift+1 back to Mac and Command+Shift+2 to Windows, or the closest Deskflow-supported equivalent.
-4. Mac Command should act as Windows Alt while controlling Windows, so Command+Tab behaves like Windows Alt+Tab.
+4. Mac Command should act as Windows Alt while controlling Windows. Command+Tab needs a BetterTouchTool bridge because macOS reserves it.
 5. Clipboard sharing only after the input-only baseline is stable; start with clipboard disabled.
 
 Work area:
@@ -38,6 +38,7 @@ Important lessons from the working setup:
 - Do not use keystroke(shift+meta+1) or keystroke(shift+meta+2). In the working Mac setup, that broke typing Shift+1 / ! by triggering a screen switch.
 - Use shift+super+1/2 if Deskflow recognizes Command that way, plus shift+alt+1/2 fallback.
 - The Swift helper must only post Control+Command+Right/Left Deskflow hotkeys. Do not push the cursor to the screen edge as a fallback.
+- macOS captures physical Command+Tab before Deskflow can forward it. If I want Command+Tab to act as Windows Alt+Tab, create a BetterTouchTool bridge that is enabled only in Windows mode: Command+Shift+2 enables a BTT Command+Tab trigger that posts Option+Tab through Deskflow; Command+Shift+1 disables that BTT trigger so normal Mac Command+Tab returns.
 - If VPN is used, do not expose Deskflow on VPN interfaces. Use the LAN wrapper pattern: bind to the current Wi-Fi/LAN IP dynamically and verify route to Windows stays on local LAN.
 - Set Deskflow preventSleep=false unless I explicitly want the Mac kept awake; this reduces battery/heat and the watchdog can recover after wake.
 - Add the Mac reliability watchdog after the base setup works: restart Deskflow if port 24800 is not listening and restart once after macOS wake.
@@ -80,7 +81,7 @@ Tasks:
    - Command+Shift+1 or fallback returns to Mac.
    - Command+Shift+2 or fallback switches to Windows.
    - Shift+1 types ! and does not switch machines.
-   - Command+Tab acts as Alt+Tab on Windows.
+   - If the BTT bridge was installed, Command+Tab acts as Alt+Tab on Windows after entering Windows mode with Command+Shift+2.
    - Mouse does not jump to the right when switching.
    - Clipboard sharing is disabled for the first stable input-only pass.
 12. Ask Windows Codex to run the Windows tuning script after input is working:

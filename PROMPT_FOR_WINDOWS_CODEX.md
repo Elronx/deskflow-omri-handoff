@@ -68,7 +68,7 @@ Tasks after approval:
 6. Test Notepad input from the Mac:
    - normal letters.
    - Shift+1 should type !, not switch machines.
-   - Command+Tab from the Mac should behave like Alt+Tab on Windows while Windows has Deskflow focus.
+   - If Mac Codex installed the BTT Command+Tab bridge, Command+Tab from the Mac should behave like Alt+Tab on Windows after Windows mode is entered with Command+Shift+2.
 7. Apply scroll tuning by running windows/apply-deskflow-client-tuning.ps1:
    powershell -ExecutionPolicy Bypass -File .\windows\apply-deskflow-client-tuning.ps1 -ScrollScale 0.1 -WheelScrollLines 1 -WheelScrollChars 1 -RestartDeskflow
 8. If Omri approves autostart, rerun with -AddCurrentUserAutostart and the real -MacServerIp.

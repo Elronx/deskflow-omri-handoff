@@ -36,7 +36,13 @@ alt = alt
 ctrl = ctrl
 ```
 
-This makes the Mac `Command` key behave like Windows `Alt` while the Windows client is focused. Deskflow's text config exposes generic `alt`, not a left/right Alt split. With Windows focus, `Command+Tab` should behave like Windows `Alt+Tab`.
+This makes the Mac `Command` key behave like Windows `Alt` for keys Deskflow receives while the Windows client is focused. Deskflow's text config exposes generic `alt`, not a left/right Alt split.
+
+Important exception: macOS reserves physical `Command+Tab` for the Mac app switcher, so Deskflow may never receive it. To make `Command+Tab` act like Windows `Alt+Tab`, add a BetterTouchTool bridge that is enabled only while Windows mode is active:
+
+- `Command+Shift+2` switches to Windows and enables the BTT `Command+Tab` bridge.
+- Physical `Command+Tab` then runs a helper that posts `Option+Tab` through Deskflow, which Windows receives as `Alt+Tab`.
+- `Command+Shift+1` returns to Mac and disables the BTT bridge so normal Mac `Command+Tab` works again.
 
 Working hotkey pattern:
 
@@ -61,6 +67,8 @@ keystroke(shift+meta+2)
 On the working Mac, `shift+meta+1` behaved like plain `Shift+1`. That broke typing `!` because it switched to Windows.
 
 Do not use an edge-push cursor fallback in helper scripts. The early helper moved the mouse to the right edge to force switching; it caused the pointer to jump. The final helper only posts Deskflow hotkeys.
+
+Do not assume Deskflow mapping alone can override macOS `Command+Tab`. If `Command+Tab` matters, use the BTT enable/disable bridge described above.
 
 Do not mix in screen streaming at first. Moonlight/Sunshine was used only as a temporary maintenance view when Windows Codex handoff was unavailable. It is not needed for daily Deskflow input control.
 
@@ -130,6 +138,7 @@ Mac-side:
 - Clipboard sharing is disabled for the first stable input-only pass.
 - `Command+Shift+1` or fallback hotkey switches back to Mac.
 - `Command+Shift+2` or fallback hotkey switches to Windows.
+- If the BTT bridge is installed, `Command+Shift+2` enables Windows `Command+Tab -> Alt+Tab`, and `Command+Shift+1` disables it.
 - Typing `Shift+1` produces `!` and does not switch machines.
 
 Windows-side:
@@ -137,7 +146,7 @@ Windows-side:
 - Deskflow client shows the Mac server IP.
 - Windows has an established TCP connection to `<MAC_LAN_IP>:24800`.
 - Notepad receives typed text.
-- `Command+Tab` from Mac behaves like Windows `Alt+Tab` while Windows has Deskflow focus.
+- If the BTT bridge is installed, `Command+Tab` from Mac behaves like Windows `Alt+Tab` after Windows mode is entered with `Command+Shift+2`.
 - Two-finger scroll is tested in a browser and adjusted only through the Windows tuning script or Deskflow client settings.
 
 ## Coordination Script
