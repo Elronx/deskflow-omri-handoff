@@ -94,6 +94,7 @@ The repo includes templates:
 - `mac/deskflow-watchdog.sh`
 - `mac/deskflow-server-wrapper.sh`
 - `mac/com.local.deskflow-watchdog.plist.template`
+- `mac/com.local.deskflow-server.plist.template`
 
 When adapting the plist, replace `<MAC_SETUP_ROOT>` with Omri's absolute setup folder, usually `/Users/<omri-user>/Mac-Windows/deskflow-mac-windows-setup`.
 
@@ -126,6 +127,29 @@ The Windows laptop may need:
 - Deskflow installed.
 - Outbound access to the Mac server at `<MAC_LAN_IP>:24800`.
 - Autostart entry if Omri wants Deskflow client to reconnect after login.
+
+## Trackpad Mapping Bundle
+
+`mac/install-btt-mappings.sh` installs the complete tested mapping through
+BetterTouchTool's supported AppleScript interface after taking a SQLite backup:
+
+- two-finger swipe left: Windows/browser Back;
+- two-finger swipe right: Windows/browser Forward;
+- three-finger swipe left: previous Chrome/browser tab (`Control+Shift+Tab`);
+- three-finger swipe right: next Chrome/browser tab (`Control+Tab`);
+- three-finger tap: native middle mouse button;
+- `Command+Shift+1`: return to Mac;
+- `Command+Shift+2`: switch to Windows.
+
+The two-finger mapping defaults to sensitivity `0.38` and serializes both
+directions through one 700 ms cooldown. This prevents an ordinary horizontal
+image pan from navigating too easily and prevents one gesture from firing Back
+twice. The helper sends explicit modifier down/up transitions for tab changes,
+so Windows receives the intended chord rather than a plain Tab focus change.
+
+BetterTouchTool is a separate third-party application and may require a trial
+or license. Its Accessibility permission must be granted by the Mac user; the
+installer cannot and must not bypass macOS consent.
 
 Ask before changing permissions, installing software, changing firewall rules, or adding autostart entries.
 

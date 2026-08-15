@@ -14,6 +14,10 @@ This package is intentionally input-only. It does not set up Moonlight, Sunshine
 - Switch to Windows with `Command+Shift+2` where supported.
 - Keep pointer movement stable with absolute Deskflow pointer mode; avoid locked relative mode unless there is a specific reason to re-test it.
 - Tune Windows client scrolling as far as Deskflow allows.
+- Two-finger swipe left/right sends browser Back/Forward with a deliberate
+  threshold and a one-action cooldown.
+- Three-finger swipe left/right sends previous/next tab on Windows.
+- Three-finger tap sends a native middle mouse click on Windows.
 - Start with clipboard sharing disabled; re-enable later only after the input bridge is stable.
 
 ## Quick Start For Omri
@@ -31,17 +35,25 @@ This package is intentionally input-only. It does not set up Moonlight, Sunshine
 - [templates/server.conf.template](templates/server.conf.template): Deskflow server config template for the Mac.
 - [mac/deskflow-focus.swift](mac/deskflow-focus.swift): helper that posts Deskflow hotkeys without moving the cursor.
 - [mac/compile-helper.sh](mac/compile-helper.sh): compiles the Swift helper.
+- [mac/install-btt-mappings.sh](mac/install-btt-mappings.sh): backs up the
+  active BetterTouchTool store and installs the switch, tab, navigation, and
+  middle-click mappings.
 - [mac/switch-to-windows.sh](mac/switch-to-windows.sh): calls the helper to switch control to Windows.
 - [mac/switch-to-mac.sh](mac/switch-to-mac.sh): calls the helper to return control to Mac.
 - [mac/deskflow-server-wrapper.sh](mac/deskflow-server-wrapper.sh): starts Deskflow bound to the local LAN interface, not VPN tunnels.
 - [mac/deskflow-reliable-restart.sh](mac/deskflow-reliable-restart.sh): controlled restart helper for the Mac server LaunchAgent.
 - [mac/deskflow-watchdog.sh](mac/deskflow-watchdog.sh): wake/listener watchdog for the Mac server.
+- [mac/com.local.deskflow-server.plist.template](mac/com.local.deskflow-server.plist.template): supervised Mac server LaunchAgent template.
 - [mac/com.local.deskflow-watchdog.plist.template](mac/com.local.deskflow-watchdog.plist.template): LaunchAgent template for the watchdog.
 - [windows/apply-deskflow-client-tuning.ps1](windows/apply-deskflow-client-tuning.ps1): Windows-side Deskflow scroll tuning and optional client restart/autostart.
 
 ## Safety Notes
 
 - Do not commit local credentials, Sunshine credentials, logs, or machine-specific configs.
+- Never disable Windows UAC secure desktop to make Deskflow easier to use.
+- The bundle contains no passwords, certificates, tokens, host addresses, or
+  machine-specific trust. Every downloaded release must match the SHA-256 in
+  the prompt before any script runs.
 - Do not touch Bluetooth/custom HID projects for this setup.
 - Ask before installs, firewall changes, Accessibility/Input Monitoring permissions, or autostart changes.
 - Keep all Omri-specific work in `~/Mac-Windows/deskflow-mac-windows-setup` on the Mac and `%USERPROFILE%\Mac-Windows\deskflow-mac-windows-setup` on Windows.
