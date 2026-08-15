@@ -1,91 +1,113 @@
 # Prompt For Omri's Mac Codex
 
-Paste the text below into Codex on Omri's Mac.
+Paste everything inside the block into Codex on Omri's Mac.
 
 ```text
-Goal: Set up Deskflow with this Mac as the SERVER for low-latency LAN/Wi-Fi control of a Windows laptop.
+Goal: install the complete Deskflow Mac-server bundle and coordinate with the
+Windows Codex until keyboard, pointer, hotkeys, and trackpad mappings pass.
 
-Context:
-I want to control my Windows laptop from my Mac using the Mac keyboard and Mac trackpad/mouse. The Mac is the Deskflow SERVER. The Windows laptop is the Deskflow CLIENT. Use Deskflow input-only first. Do not set up Moonlight, Sunshine, screen streaming, or screen swapping unless I explicitly ask later.
+Authorization and interaction policy:
+- You may download this exact bundle, install the official current Deskflow
+  release, install/open BetterTouchTool if it is missing, compile the included
+  local Swift helper, create current-user LaunchAgents, and configure the
+  current user's Deskflow/BTT settings.
+- Do not stop for routine read-only checks, backups, file creation, compilation,
+  or current-user configuration. Pause only when macOS itself requires the user
+  to enter a password, grant Accessibility/Input Monitoring, or accept a
+  BetterTouchTool license/trial. Open the exact required settings page when that
+  happens and explain the single action Omri must take.
+- Never capture or exclusively control physical input. If any UI automation
+  stalls, release it before waiting or troubleshooting.
 
-Priority order:
-1. Lowest practical input latency.
-2. Reliable smooth switching.
-3. Hotkey switching, ideally Command+Shift+1 back to Mac and Command+Shift+2 to Windows, or the closest Deskflow-supported equivalent.
-4. Mac Command should act as Windows Alt while controlling Windows. Command+Tab needs a BetterTouchTool bridge because macOS reserves it.
-5. Clipboard sharing only after the input-only baseline is stable; start with clipboard disabled.
+Secure bundle retrieval (do this first; do not use an attachment or a path from
+another computer):
 
-Work area:
-Use a new separate folder only:
-~/Mac-Windows/deskflow-mac-windows-setup
+URL:
+https://github.com/Elronx/deskflow-omri-handoff/releases/download/v2.0.0/deskflow-omri-bundle-v2.0.0.zip
 
-Reference package:
-Use the handoff repo files I provide. Read README.md, HANDOFF.md, templates/server.conf.template, mac/deskflow-focus.swift, and the two prompts before changing anything.
+Required SHA-256:
+96808ff51e82d253b718b0c843ef193b3461b20327a2f9e5078976a1922dcec3
 
-Important lessons from the working setup:
-- Use Deskflow input only at first.
-- Windows screen should be to the right of the Mac screen.
-- Set switchDelay = 0.
-- Set relativeMouseMoves = false.
-- Start with clipboardSharing = false for lower overhead; re-enable later only if I ask and the input bridge is stable.
-- Do not use lockCursorToScreen by default. Locked relative mode caused pointer center-jumps in the working setup.
-- On the Windows screen in the Mac server config, map:
-  super = alt
-  meta = alt
-  alt = alt
-  ctrl = ctrl
-- Do not use keystroke(shift+meta+1) or keystroke(shift+meta+2). In the working Mac setup, that broke typing Shift+1 / ! by triggering a screen switch.
-- Use shift+super+1/2 if Deskflow recognizes Command that way, plus shift+alt+1/2 fallback.
-- The Swift helper must only post Control+Command+Right/Left Deskflow hotkeys. Do not push the cursor to the screen edge as a fallback.
-- macOS captures physical Command+Tab before Deskflow can forward it. If I want Command+Tab to act as Windows Alt+Tab, create a BetterTouchTool bridge that is enabled only in Windows mode: Command+Shift+2 enables a BTT Command+Tab trigger that posts Option+Tab through Deskflow; Command+Shift+1 disables that BTT trigger so normal Mac Command+Tab returns.
-- If VPN is used, do not expose Deskflow on VPN interfaces. Use the LAN wrapper pattern: bind to the current Wi-Fi/LAN IP dynamically and verify route to Windows stays on local LAN.
-- Set Deskflow preventSleep=false unless I explicitly want the Mac kept awake; this reduces battery/heat and the watchdog can recover after wake.
-- Add the Mac reliability watchdog after the base setup works: restart Deskflow if port 24800 is not listening and restart once after macOS wake.
+Run the equivalent of:
 
-Tasks:
-1. Create/use ~/Mac-Windows/deskflow-mac-windows-setup only.
-2. Gather Mac facts:
-   - macOS version.
-   - hostname / Deskflow screen name.
-   - active network service.
-   - LAN IP addresses.
-   - Wi-Fi band/channel if available.
-   - VPN/proxy status if visible.
-   - Deskflow installed/version/path if present.
-3. Ask before installing Deskflow, changing macOS permissions, adding BetterTouchTool, changing firewall settings, or adding autostart.
-4. Coordinate with Windows Codex and ask it for:
-   - Windows IP address.
-   - Windows hostname/client screen name shown in Deskflow.
-   - Deskflow installed/version/path.
-   - firewall status.
-   - whether it can ping/reach this Mac IP.
-   - whether TCP connection to this Mac on port 24800 becomes Established after setup.
-5. Generate server.conf from templates/server.conf.template with the real Mac and Windows screen names.
-6. Configure Deskflow as server using that config.
-7. Compile mac/deskflow-focus.swift and create switch scripts equivalent to switch-to-windows.sh and switch-to-mac.sh.
-8. Install a user LaunchAgent for Deskflow server if one is not already present, and make sure it uses the Deskflow settings file that points to the external server.conf.
-9. Install/adapt the watchdog templates:
-   - mac/deskflow-server-wrapper.sh
-   - mac/deskflow-reliable-restart.sh
-   - mac/deskflow-watchdog.sh
-   - mac/com.local.deskflow-watchdog.plist.template
-10. Bind hotkeys:
-   - Prefer direct Deskflow hotkeys shift+super+1 and shift+super+2.
-   - If BetterTouchTool is already installed or I approve using it, bind Command+Shift+1 to switch-to-mac.sh and Command+Shift+2 to switch-to-windows.sh.
-   - Keep Deskflow fallback hotkeys shift+alt+1/2 and control+super+arrow.
-11. Verify:
-   - Windows connects to Mac server on TCP 24800.
-   - If VPN is used, Mac server listens on the LAN IP only, not VPN interfaces.
-   - Route to Windows stays on Wi-Fi/LAN, not utun/VPN.
-   - Command+Shift+1 or fallback returns to Mac.
-   - Command+Shift+2 or fallback switches to Windows.
-   - Shift+1 types ! and does not switch machines.
-   - If the BTT bridge was installed, Command+Tab acts as Alt+Tab on Windows after entering Windows mode with Command+Shift+2.
-   - Mouse does not jump to the right or center when switching.
-   - Clipboard sharing is disabled for the first stable input-only pass.
-12. Ask Windows Codex to run the Windows tuning script after input is working:
-    windows/apply-deskflow-client-tuning.ps1 with ScrollScale 0.1, WheelScrollLines 1, WheelScrollChars 1.
-13. Keep exact notes of settings, commands, permissions, test results, and any caveats.
+  STAGE="$(mktemp -d)"
+  ARCHIVE="$STAGE/deskflow-omri-bundle-v2.0.0.zip"
+  curl --fail --location --proto '=https' --tlsv1.2 \
+    'https://github.com/Elronx/deskflow-omri-handoff/releases/download/v2.0.0/deskflow-omri-bundle-v2.0.0.zip' \
+    --output "$ARCHIVE"
+  test "$(shasum -a 256 "$ARCHIVE" | awk '{print $1}')" = \
+    '96808ff51e82d253b718b0c843ef193b3461b20327a2f9e5078976a1922dcec3'
+  ditto -x -k "$ARCHIVE" "$STAGE/unpacked"
 
-Do not touch Bluetooth/custom HID repos. Do not enable screen streaming. Start by gathering facts and tell me the next safest action.
+If the checksum differs, stop without running anything. The extracted source is
+under `$STAGE/unpacked/deskflow-omri-bundle-v2.0.0`. Read `SECURITY.md`,
+`README.md`, and `HANDOFF.md` before executing scripts. Inspect the scripts and
+confirm that they contain no downloaded second stage, credential material, or
+machine-specific identity.
+
+Install the verified source at this exact per-user work area:
+
+  ~/Mac-Windows/deskflow-mac-windows-setup
+
+If that target already exists, do not overwrite it. Back it up with a timestamp
+or continue only if it is clearly this same clean package. Preserve every
+pre-existing user file.
+
+Architecture and required behavior:
+- Mac is the Deskflow server; Windows is the client; TCP port 24800.
+- Default physical layout matching Elron's final setup: Windows is LEFT of the
+  Mac; moving left enters Windows and moving right returns to the Mac. Keep
+  Command+Shift+1/2 hotkeys regardless of layout.
+- Command+Shift+1 returns to Mac; Command+Shift+2 selects Windows.
+- Mac Command acts as Windows Alt while Windows is controlled.
+- Two-finger left/right swipe sends browser Back/Forward. Use the included 0.38
+  deliberate-swipe sensitivity and shared 700 ms cooldown so one swipe cannot
+  navigate twice.
+- Three-finger left/right swipe sends previous/next browser tab using explicit
+  Control+Shift+Tab / Control+Tab transitions.
+- Three-finger tap sends one native middle mouse click.
+- Absolute pointer mode; no locked-relative mode and no edge-push/visible cursor
+  animation in the switch helper.
+- Clipboard starts disabled. No screen streaming, Moonlight, or Sunshine.
+- Bind only to the route-selected private LAN interface, never a VPN tunnel.
+- Keep Windows UAC secure desktop enabled. Stock Deskflow may not control every
+  protected Windows prompt; do not weaken Windows security to hide that limit.
+
+Execution:
+1. Gather macOS version, Mac Deskflow screen name, active LAN interface/IP,
+   route/VPN status, and installed Deskflow/BTT versions.
+2. Ask Windows Codex for its LAN IP and exact Deskflow client screen name.
+3. Install official Deskflow if absent. Do not install an unknown continuous or
+   third-party binary.
+4. Generate `server.conf` from `templates/server.conf.template` with the real
+   screen names and the required left-side physical links. Preserve the private
+   helper bindings: Control+Command+Right selects Windows and
+   Control+Command+Left selects Mac; these are screen selectors, not physical
+   edge directions.
+5. Configure Deskflow server with `switchDelay=0`,
+   `relativeMouseMoves=false`, and `clipboardSharing=false`.
+6. Compile `mac/deskflow-focus.swift` using `mac/compile-helper.sh`. Run its
+   `status` mode; it must not inject input.
+7. Install the server and watchdog LaunchAgents from both plist templates,
+   replacing `<MAC_SETUP_ROOT>` and `<WINDOWS_LAN_IP>` with exact values.
+   Validate the rendered plists before loading them. Ensure the GUI is not a
+   second owner of `deskflow-core`.
+8. After BetterTouchTool is installed/open and Accessibility is granted, run
+   `mac/install-btt-mappings.sh`. It must create a timestamped BTT database
+   backup and finish with PASS. Never edit an unrelated BTT trigger.
+9. Start the server and coordinate the Windows client connection.
+10. Test twenty edge crossings and ten hotkey round trips. Verify Shift+1 types
+    `!`, the pointer does not visibly travel or jump, and there is exactly one
+    server core and one established client connection.
+11. Test each gesture on Windows: Back once, Forward once, previous tab once,
+    next tab once, and one middle click. Ordinary horizontal image panning must
+    not navigate accidentally.
+12. Verify a simulated server restart and an actual later sleep/wake reconnect.
+    The watchdog must not perform a duplicate post-wake restart.
+13. Record exact versions, rendered paths, checksums, permissions, connection
+    state, and test results in a local completion report.
+
+Do not claim completion until Windows is established and every test that does
+not require a later physical sleep/wake has passed. Start now with secure bundle
+retrieval and fact gathering.
 ```

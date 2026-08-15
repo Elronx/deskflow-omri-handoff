@@ -1,80 +1,99 @@
 # Prompt For Omri's Windows Codex
 
-Paste the text below into Codex on Omri's Windows laptop.
+Paste everything inside the block into Codex on Omri's Windows laptop.
 
 ```text
-Goal: Set up Deskflow with this Windows laptop as the CLIENT, controlled by a Mac SERVER over the local LAN/Wi-Fi.
+Goal: install the complete Deskflow Windows-client bundle and coordinate with
+the Mac Codex until input, reconnection, and every forwarded mapping pass.
 
-Context:
-I want the Mac keyboard and Mac trackpad/mouse to control this Windows laptop with the lowest practical latency. Deskflow input-only is the target. Do not set up Moonlight, Sunshine, Parsec, screen streaming, or screen swapping unless I explicitly ask later.
+Authorization and interaction policy:
+- You may download this exact bundle, install the official current Deskflow
+  release, configure the current user's Deskflow client, apply the included
+  tuning, and create current-user autostart.
+- Do not stop for routine read-only checks, backups, downloads, file creation,
+  or current-user settings. Pause only when Windows itself requires an
+  elevation confirmation or credentials. Never disable UAC or secure desktop.
+- Never install a keyboard/mouse suppression hook or leave any process that
+  captures or exclusively controls the user's physical input.
 
-Priority order:
-1. Lowest practical input latency.
-2. Reliable smooth switching.
-3. Mac Command should behave as Windows Alt while controlling Windows. The Mac server config handles this.
-4. Trackpad pointer speed should feel close to the Mac.
-5. Two-finger scroll should be slowed and smoothed as much as Deskflow/Windows allow.
+Secure bundle retrieval (do this first; do not use an attachment or a Mac-only
+path):
 
-Work area:
-Use a new separate folder only:
-%USERPROFILE%\Mac-Windows\deskflow-mac-windows-setup
+URL:
+https://github.com/Elronx/deskflow-omri-handoff/releases/download/v2.0.0/deskflow-omri-bundle-v2.0.0.zip
 
-Reference package:
-Use the handoff repo files I provide. Read README.md, HANDOFF.md, and windows/apply-deskflow-client-tuning.ps1 before changing anything.
+Required SHA-256:
+96808ff51e82d253b718b0c843ef193b3461b20327a2f9e5078976a1922dcec3
 
-Important lessons from the working setup:
-- The Mac is the Deskflow server; Windows is the Deskflow client.
-- Windows does not need inbound Deskflow server access for the normal client setup, but it must reach the Mac server at <MAC_LAN_IP>:24800.
-- Ask before installing software, changing firewall rules, adding autostart, or making admin-level changes.
-- UAC prompts may use Windows secure desktop, where normal user-level Deskflow input cannot click Yes. Prefer a Deskflow service/daemon/elevated-client setup if available. Do not disable secure desktop unless I explicitly approve the security tradeoff.
-- Deskflow client scroll scale should be set to 0.1. That is the lowest built-in value we found useful.
-- Windows wheel settings should be WheelScrollLines=1 and WheelScrollChars=1.
-- If the Deskflow GUI cannot restart the client, find deskflow-core.exe and run it as:
-  deskflow-core.exe client -s "<PATH_TO_DESKFLOW_CONF>"
-- Portable Deskflow installs can live under:
-  %LOCALAPPDATA%\Programs\DeskflowPortable\PFiles64\Deskflow
+Run the PowerShell equivalent of:
 
-First run these read-only facts in PowerShell and report the full output:
+  $Stage = Join-Path $env:TEMP ("deskflow-omri-" + [guid]::NewGuid())
+  New-Item -ItemType Directory -Path $Stage | Out-Null
+  $Archive = Join-Path $Stage 'deskflow-omri-bundle-v2.0.0.zip'
+  Invoke-WebRequest -Uri 'https://github.com/Elronx/deskflow-omri-handoff/releases/download/v2.0.0/deskflow-omri-bundle-v2.0.0.zip' -OutFile $Archive
+  $Actual = (Get-FileHash -LiteralPath $Archive -Algorithm SHA256).Hash.ToLowerInvariant()
+  if ($Actual -ne '96808ff51e82d253b718b0c843ef193b3461b20327a2f9e5078976a1922dcec3') {
+      throw "Deskflow handoff SHA-256 mismatch: $Actual"
+  }
+  Expand-Archive -LiteralPath $Archive -DestinationPath (Join-Path $Stage 'unpacked')
 
-Get-ComputerInfo | Select-Object OsName, OsVersion, OsBuildNumber, WindowsProductName, CsManufacturer, CsModel
-hostname
-whoami
-([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-Get-NetAdapter | Where-Object Status -eq 'Up' | Select-Object Name, InterfaceDescription, LinkSpeed, MacAddress
-Get-NetIPAddress -AddressFamily IPv4 | Where-Object {$_.IPAddress -notlike '169.*' -and $_.IPAddress -ne '127.0.0.1'} | Select-Object InterfaceAlias, IPAddress, PrefixLength
-Get-NetRoute -DestinationPrefix '0.0.0.0/0' | Select-Object NextHop, InterfaceAlias
-netsh wlan show interfaces
-Get-NetFirewallProfile | Select-Object Name, Enabled
-winget --version
-winget list | Select-String -Pattern 'Deskflow|Input Leap|Barrier|Synergy|Moonlight|Sunshine|Parsec'
-Get-ChildItem "$env:ProgramFiles","${env:ProgramFiles(x86)}","$env:LOCALAPPDATA\Programs","$env:APPDATA" -Recurse -Filter "deskflow*.exe" -ErrorAction SilentlyContinue | Select-Object -First 50 FullName
+If the checksum differs, stop without running anything. The extracted source is
+under `$Stage\unpacked\deskflow-omri-bundle-v2.0.0`. Read `SECURITY.md`,
+`README.md`, `HANDOFF.md`, and `windows\apply-deskflow-client-tuning.ps1`
+before executing scripts. Confirm the PowerShell contains no downloaded second
+stage, credential material, or machine-specific identity.
 
-Then ask Mac Codex for:
-- Mac LAN IP.
-- Mac Deskflow screen name.
-- Whether the Mac Deskflow server is listening on TCP 24800.
+Install the verified source at this exact per-user work area:
 
-After Mac Codex gives <MAC_LAN_IP>, run:
+  %USERPROFILE%\Mac-Windows\deskflow-mac-windows-setup
 
-Test-Connection -Count 20 -TargetName <MAC_LAN_IP> | Measure-Object -Property Latency -Average -Maximum -Minimum
-Test-NetConnection <MAC_LAN_IP> -Port 24800
+If that target already exists, do not overwrite it. Back it up with a timestamp
+or continue only if it is clearly this same clean package. Preserve every
+pre-existing user file.
 
-Tasks after approval:
-1. Install Deskflow if not present, using the official Deskflow release or winget if available. Ask before installing.
-2. Configure Deskflow as client connecting to <MAC_LAN_IP>.
-3. Report the exact Windows client screen name/hostname shown in Deskflow so Mac Codex can put that in server.conf.
-4. When Mac server is ready, connect the Windows client.
-5. Verify:
-   Get-NetTCPConnection -RemoteAddress <MAC_LAN_IP> -RemotePort 24800 -ErrorAction SilentlyContinue
-6. Test Notepad input from the Mac:
-   - normal letters.
-   - Shift+1 should type !, not switch machines.
-   - If Mac Codex installed the BTT Command+Tab bridge, Command+Tab from the Mac should behave like Alt+Tab on Windows after Windows mode is entered with Command+Shift+2.
-7. Apply scroll tuning by running windows/apply-deskflow-client-tuning.ps1:
-   powershell -ExecutionPolicy Bypass -File .\windows\apply-deskflow-client-tuning.ps1 -ScrollScale 0.1 -WheelScrollLines 1 -WheelScrollChars 1 -RestartDeskflow
-8. If Omri approves autostart, rerun with -AddCurrentUserAutostart and the real -MacServerIp.
-9. Test browser scrolling, especially YouTube or a long webpage. If it is still too fast, explain clearly that Deskflow is already at the built-in 0.1 floor and the next step would be a separate Windows scroll smoothing/filter helper.
-10. Keep exact notes of settings, paths, connection state, and tests.
+Required behavior:
+- Windows is the Deskflow client; Mac is the server; TCP port 24800.
+- Default physical layout matching Elron's final setup: Windows is LEFT of the
+  Mac; moving right from Windows returns to Mac.
+- Mac Command is translated to Windows Alt by the Mac server.
+- Three-finger left/right arrives as Control+Shift+Tab / Control+Tab.
+- Three-finger tap arrives as native middle mouse button.
+- Two-finger left/right arrives as browser Back/Forward.
+- Scroll tuning: Deskflow X/Y scale 0.1; Windows wheel lines/chars 1.
+- No Moonlight, Sunshine, screen streaming, screen swapping, custom HID driver,
+  or Bluetooth changes.
+- Keep Windows UAC and secure desktop enabled. Stock Deskflow cannot promise
+  control of every protected UAC/credential surface; do not weaken security.
 
-Do not touch Bluetooth/custom HID repos. Do not enable screen streaming. Start in read-only mode, report facts, and wait for Mac-side coordination before changing anything.
+Execution:
+1. Gather Windows version/build, hostname, current user/admin state, active LAN
+   adapter/IP/MAC, default route, VPN state, firewall profiles, and installed
+   Deskflow version/path. Make no changes during this fact pass.
+2. Give Mac Codex the exact Windows LAN IP and Deskflow client screen name. Ask
+   it for the Mac LAN IP and confirmation that TCP 24800 is listening.
+3. Install only the official current Deskflow release if absent. Prefer the
+   official winget package when available; verify publisher/source before
+   installation. Do not install a random portable build.
+4. Configure the client to the exact Mac LAN IP. Do not open a broad inbound
+   firewall rule; the client needs outbound LAN access to the Mac server.
+5. Copy the verified bundle into the work area, preserving its directory
+   structure.
+6. After the Mac server is ready, connect and require an Established TCP session
+   to `<MAC_LAN_IP>:24800`.
+7. Run one PowerShell command from the installed bundle root:
+   `& .\windows\apply-deskflow-client-tuning.ps1 -ScrollScale 0.1 -WheelScrollLines 1 -WheelScrollChars 1 -RestartDeskflow -AddCurrentUserAutostart -MacServerIp <MAC_LAN_IP>`
+8. Inspect the resulting HKCU autostart command and require exact quoted paths
+   to the discovered official `deskflow-core.exe` and actual config. It must
+   start exactly one interactive client after sign-in.
+9. Test Notepad input, Shift+1=`!`, ordinary pointer motion, scroll, browser Back
+   once, Forward once, previous/next tab once, and a three-finger middle click.
+10. Test client-process restart without reboot and verify automatic reconnect.
+11. Report clearly that protected UAC/credential desktops are not proven by
+    stock Deskflow. Do not disable secure desktop or claim an impossible pass.
+12. Record exact versions, paths, hashes, settings, TCP state, and test results
+    in a local completion report.
+
+Do not claim completion until the Mac server is reachable, the TCP session is
+Established, and all ordinary-desktop tests pass. Start now with secure bundle
+retrieval and read-only fact gathering.
 ```

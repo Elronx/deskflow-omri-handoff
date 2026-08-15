@@ -24,8 +24,11 @@ This package is intentionally input-only. It does not set up Moonlight, Sunshine
 
 1. Open Codex on the Mac and paste [PROMPT_FOR_MAC_CODEX.md](PROMPT_FOR_MAC_CODEX.md).
 2. Open Codex on the Windows laptop and paste [PROMPT_FOR_WINDOWS_CODEX.md](PROMPT_FOR_WINDOWS_CODEX.md).
-3. Let the Mac Codex and Windows Codex exchange the facts they ask for: Mac IP, Windows IP, Deskflow screen names, firewall status, and connection test output.
-4. Do not enable the optional screen-streaming pieces until Deskflow input is stable.
+3. Each prompt downloads the same immutable v2.0.0 release asset over HTTPS,
+   verifies SHA-256 before extraction, and installs only from those verified
+   bytes. No separate attachment or Mac-local path is required.
+4. Let the Mac Codex and Windows Codex exchange the facts they ask for: Mac IP, Windows IP, Deskflow screen names, firewall status, and connection test output.
+5. Do not enable the optional screen-streaming pieces until Deskflow input is stable.
 
 ## Files
 
